@@ -1,16 +1,7 @@
-/*
- * Copyright (c) 2016-2020, The Linux Foundation. All rights reserved.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 and
- * only version 2 as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- */
+/* * Copyright (c) 2016-2020, The Linux Foundation. All rights reserved. * * This program is free software; you can redistribute it and/or modify * it under the 
+ terms of the GNU General Public License version 2 and * only version 2 as published by the Free Software Foundation. * * This program is distributed in the 
+ hope that it will be useful, * but WITHOUT ANY WARRANTY; without even the implied warranty of * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the * 
+ GNU General Public License for more details. * */
 
 #define pr_fmt(fmt)	"msm-dsi-panel:[%s:%d] " fmt, __func__, __LINE__
 #include <linux/delay.h>
@@ -754,7 +745,7 @@ static int dsi_panel_tx_cmd_set(struct dsi_panel *panel,
 	state = mode->priv_info->cmd_sets[type].state;
 
 	if (count == 0) {
-		pr_err("[%s] No commands to be sent for state(%d)\n",
+		pr_debug("[%s] No commands to be sent for state(%d)\n",
 			 panel->name, type);
 		goto error;
 	}
@@ -1780,10 +1771,6 @@ const char *cmd_set_prop_map[DSI_CMD_SET_MAX] = {
 	"qcom,mdss-dsi-panel-hbm-on-command-4",
 	"qcom,mdss-dsi-panel-hbm-on-command-5",
 	"qcom,mdss-dsi-panel-hbm-max-brightness-command-on",
-	"qcom,mdss-dsi-panel-display-srgb-color-mode-on-command",
-	"qcom,mdss-dsi-panel-display-p3-mode-on-command",
-	"qcom,mdss-dsi-panel-display-wide-color-mode-on-command",
-	"qcom,mdss-dsi-panel-dci-p3-off-command", // also disables SRGB and wide color modes
 	"qcom,mdss-dsi-panel-aod-on-command-1",
 	"qcom,mdss-dsi-panel-aod-on-command-2",
 	"qcom,mdss-dsi-panel-aod-off-command",
@@ -1822,10 +1809,6 @@ const char *cmd_set_state_map[DSI_CMD_SET_MAX] = {
 	"qcom,mdss-dsi-hbm-on-command-state",
 	"qcom,mdss-dsi-hbm-on-command-state",
 	"qcom,mdss-dsi-panel-hbm-max-brightness-command-on-state",
-	"qcom,mdss-dsi-panel-display-srgb-color-mode-on-command-state",
-	"qcom,mdss-dsi-panel-display-p3-mode-on-command-state",
-	"qcom,mdss-dsi-panel-display-wide-color-mode-on-command-state",
-	"qcom,mdss-dsi-panel-dci-p3-off-command-state",
 	"qcom,mdss-dsi-hbm-on-command-state",
 	"qcom,mdss-dsi-aod-on-command-state",
 	"qcom,mdss-dsi-aod-on-command-state",
@@ -4135,8 +4118,6 @@ int dsi_panel_enable(struct dsi_panel *panel)
 
 	if (panel->hbm_mode)
 		dsi_panel_apply_hbm_mode(panel);
-	if (panel->display_mode != DISPLAY_MODE_DEFAULT)
-		dsi_panel_apply_display_mode(panel);
 	if (panel->aod_mode == 2) {
 		rc = dsi_panel_set_aod_mode(panel, 2);
 		panel->aod_status = 1;
@@ -4308,25 +4289,6 @@ int dsi_panel_apply_hbm_mode(struct dsi_panel *panel)
 		type = type_map[panel->hbm_mode];
 	else
 		type = DSI_CMD_SET_HBM_OFF;
-
-	mutex_lock(&panel->panel_lock);
-	rc = dsi_panel_tx_cmd_set(panel, type);
-	mutex_unlock(&panel->panel_lock);
-
-	return rc;
-}
-
-int dsi_panel_apply_display_mode(struct dsi_panel *panel)
-{
-	enum dsi_cmd_set_type type;
-	int rc;
-
-	switch (panel->display_mode) {
-		case DISPLAY_MODE_SRGB: type = DSI_CMD_SET_MODE_SRGB; break;
-		case DISPLAY_MODE_DCI_P3: type = DSI_CMD_SET_MODE_DCI_P3; break;
-		case DISPLAY_MODE_WIDE_COLOR: type = DSI_CMD_SET_MODE_WIDE_COLOR; break;
-		default: type = DSI_CMD_SET_MODE_DEFAULT; break;
-	}
 
 	mutex_lock(&panel->panel_lock);
 	rc = dsi_panel_tx_cmd_set(panel, type);
