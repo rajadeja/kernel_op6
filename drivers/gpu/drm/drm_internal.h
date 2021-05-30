@@ -93,12 +93,28 @@ int drm_gem_open_ioctl(struct drm_device *dev, void *data,
 void drm_gem_open(struct drm_device *dev, struct drm_file *file_private);
 void drm_gem_release(struct drm_device *dev, struct drm_file *file_private);
 
+int dsi_display_set_acl_mode(struct drm_connector *connector, int level);
+int dsi_display_get_acl_mode(struct drm_connector *connector);
 int dsi_display_set_hbm_mode(struct drm_connector *connector, int level);
 int dsi_display_get_hbm_mode(struct drm_connector *connector);
 int dsi_display_set_aod_mode(struct drm_connector *connector, int level);
 int dsi_display_get_aod_mode(struct drm_connector *connector);
+int dsi_display_set_aod_mode_test(struct drm_connector *connector, int level);
+int dsi_display_get_aod_mode_test(struct drm_connector *connector);
+int dsi_display_set_aod_disable(struct drm_connector *connector, int disable);
+int dsi_display_get_aod_disable(struct drm_connector *connector);
 int dsi_display_set_fp_hbm_mode(struct drm_connector *connector, int level);
 int dsi_display_get_fp_hbm_mode(struct drm_connector *connector);
+int dsi_display_set_native_display_p3_mode(struct drm_connector *connector, int level);
+int dsi_display_get_native_display_p3_mode(struct drm_connector *connector);
+int dsi_display_set_native_display_wide_color_mode(struct drm_connector *connector, int level);
+int dsi_display_get_native_display_wide_color_mode(struct drm_connector *connector);
+int dsi_display_set_native_display_srgb_color_mode(struct drm_connector *connector, int level);
+int dsi_display_get_native_display_srgb_color_mode(struct drm_connector *connector);
+int dsi_display_set_customer_srgb_mode(struct drm_connector *connector, int level);
+int dsi_display_set_customer_p3_mode(struct drm_connector *connector, int level);
+int dsi_display_get_customer_srgb_mode(struct drm_connector *connector);
+int dsi_display_get_customer_p3_mode(struct drm_connector *connector);
 
 /* drm_debugfs.c */
 #if defined(CONFIG_DEBUG_FS)
